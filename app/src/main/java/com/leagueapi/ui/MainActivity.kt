@@ -1,7 +1,6 @@
 package com.leagueapi.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.leagueapi.databinding.ActivityMainBinding

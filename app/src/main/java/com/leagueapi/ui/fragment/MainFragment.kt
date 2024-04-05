@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.leagueapi.data.ChampionsService
@@ -29,7 +30,7 @@ class MainFragment : Fragment() {
     private var xdp: Float = 0f
     private lateinit var binding: FragmentMainBinding
     private var champions = ArrayList<Champion>()
-
+    private lateinit var adapter: ChampionsAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -44,7 +45,18 @@ class MainFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(inflater, container, false)
+        adapter = ChampionsAdapter(screenWidth!!)
 
+        binding.searchChamps!!.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.submitList(null)
+                adapter.submitList(champions.filter { c -> c.name!!.uppercase().contains(newText!!.uppercase())})
+                return true
+            }
+        })
         /*if(xdp >= 600)
             (binding.recycler.layoutManager as GridLayoutManager).spanCount = 3*/
 
@@ -54,7 +66,8 @@ class MainFragment : Fragment() {
                     champions.add(c)
                 }
                 champions.sortBy{it.name}
-                binding.recycler.adapter = ChampionsAdapter(champions, screenWidth!!)
+                adapter.submitList(champions)
+                binding.recycler.adapter = adapter
             }
         }
         return binding.root
